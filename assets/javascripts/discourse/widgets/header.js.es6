@@ -199,7 +199,7 @@ export function attachAdditionalPanel(name, toggle, transformAttrs) {
   additionalPanels.push({ name, toggle, transformAttrs });
 }
 
-createWidget('osmc-links', {
+createWidget('osmc-links-desktop', {
   tagName: 'div.header-links-wrapper.clearfix',
 
   html(attrs) {
@@ -207,13 +207,13 @@ createWidget('osmc-links', {
 
     links.push(h('a.header-link', {
       target: '_blank'  ,
-      href: 'https://osmc.tv'
+      href: 'https://osmc.tv/'
     },
     'Home' ));
 
     links.push(h('a.header-link', {
       target: '_blank'  ,
-      href: 'https://osmc.tv/about'
+      href: 'https://osmc.tv/about/'
     },
     'About' ));
 
@@ -231,23 +231,49 @@ createWidget('osmc-links', {
     'Download'
     ));
 
-    links.push(h('a.header-link.active', {
-      target: '_blank',
-      href: 'https://discourse.osmc.tv'
-    },
-    'Support'
+    links.push(h('div.header-link.with-child.active', {},
+      [
+        'Support',
+        h('div.header-links-wrapper', {},
+          [
+            h('a.header-sublink.active', {
+              target: '_blank',
+              href: '#'
+            }, 'Community'),
+            h('a.header-sublink', {
+              target: '_blank',
+              href: 'https://osmc.tv/wiki'
+            }, 'Wiki'),
+            h('a.header-sublink', {
+              target: '_blank',
+              href: 'https://osmc.tv/contact/'
+            }, 'Contact')
+          ]
+        )
+      ]
+    ));
+
+    links.push(h('div.header-link.with-child', {},
+      [
+        'Contribute',
+        h('div.header-links-wrapper', {},
+          [
+            h('a.header-sublink', {
+              target: '_blank',
+              href: 'https://github.com/osmc/osmc'
+            }, 'GitHub'),
+            h('a.header-sublink', {
+              target: '_blank',
+              href: 'https://github.com/osmc/osmc/issues'
+            }, 'Report Bugs')
+          ]
+        )
+      ]
     ));
 
     links.push(h('a.header-link', {
       target: '_blank',
-      href: 'https://discourse.osmc.tv'
-    },
-    'Contribute'
-    ));
-
-    links.push(h('a.header-link', {
-      target: '_blank',
-      href: 'https://osmc.tv/store'
+      href: 'https://osmc.tv/shop/'
     },
     'Shop'
     ));
@@ -261,7 +287,7 @@ createWidget('osmc-links', {
 
     links.push(h('a.header-link.big.blue', {
       target: '_blank',
-      href: 'https://my.osmc.tv/my-account/'
+      href: 'http://myosmc.com'
     },
     'My Account'
     ));
@@ -293,7 +319,7 @@ export default createWidget('header', {
 
     let contents = () => {
       const panels = [
-        this.attach('osmc-links'),
+        this.attach('osmc-links-desktop'),
         this.attach('header-buttons', attrs),
         this.attach('header-icons', {
           hamburgerVisible: state.hamburgerVisible,
