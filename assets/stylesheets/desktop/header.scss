@@ -1,5 +1,11 @@
-.menu-container-osmc-links-mobile, .menu-container-osmc-colored-links {
-    @media screen and (min-width: 975px){
+@media screen and (min-width: 975px){
+	.menu-container-osmc-links-mobile, .menu-container-osmc-colored-links {
       display: none;
     }
+    .d-header {
+    	height: auto;
+	}
+	.extra-info-wrapper {
+	    overflow: visible;
+	}
 }
