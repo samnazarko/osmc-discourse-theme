@@ -4,11 +4,13 @@
     }
     .d-header {
     	height: auto !important;
-    	position: static !important;
+	}
+	.d-header .wrap {
+		position: static !important;
 	}
 	.d-header .contents {
 		display: block;
-		margin: inherit;
+		margin: 8px 0;
 	}
 	.extra-info-wrapper {
 	    overflow: visible;
