@@ -3,7 +3,12 @@
       display: none;
     }
     .d-header {
-    	height: auto;
+    	height: auto !important;
+    	position: static !important;
+	}
+	.d-header .contents {
+		display: block;
+		margin: inherit;
 	}
 	.extra-info-wrapper {
 	    overflow: visible;
