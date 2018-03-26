@@ -176,7 +176,7 @@ export default createWidget('hamburger-menu', {
     links.push({ href: 'https://osmc.tv/wiki', className: 'osmc-link', label: 'osmc.wiki' });
     links.push({ href: 'https://osmc.tv/contact', className: 'osmc-link', label: 'osmc.contact' });
     links.push({ href: 'https://github.com/osmc/osmc', className: 'osmc-link', label: 'osmc.github' });
-    links.push({ href: 'https://github.com/osmc/osmc/issues', className: 'osmc-link', label: 'osmc.report_bugs' });
+    links.push({ href: 'https://osmc.tv/wiki/development/reporting-bugs', className: 'osmc-link', label: 'osmc.report_bugs' });
     links.push({ href: 'https://osmc.tv/store', className: 'osmc-link', label: 'osmc.shop' });
 
     const extraLinks = flatten(applyDecorators(this, 'osmcLinks', this.attrs, this.state));

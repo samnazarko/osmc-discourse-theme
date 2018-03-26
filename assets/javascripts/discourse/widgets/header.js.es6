@@ -264,7 +264,7 @@ createWidget('osmc-links-desktop', {
             }, 'GitHub'),
             h('a.header-sublink', {
               target: '_blank',
-              href: 'https://github.com/osmc/osmc/issues'
+              href: 'https://osmc.tv/wiki/development/reporting-bugs'
             }, 'Report Bugs')
           ]
         )
