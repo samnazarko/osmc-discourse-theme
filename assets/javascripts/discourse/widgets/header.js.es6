@@ -273,7 +273,7 @@ createWidget('osmc-links-desktop', {
 
     links.push(h('a.header-link', {
       target: '_blank',
-      href: 'https://osmc.tv/shop/'
+      href: 'https://osmc.tv/store'
     },
     'Shop'
     ));
