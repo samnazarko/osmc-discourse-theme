@@ -282,7 +282,7 @@ createWidget('osmc-links-desktop', {
       target: '_blank',
       href: 'http://getvero.tv'
     },
-    'Vero 4K'
+    'Vero 4K +'
     ));
 
     links.push(h('a.header-link.big.blue', {
