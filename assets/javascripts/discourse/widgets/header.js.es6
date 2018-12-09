@@ -287,7 +287,7 @@ createWidget('osmc-links-desktop', {
 
     links.push(h('a.header-link.big.blue', {
       target: '_blank',
-      href: 'http://myosmc.com'
+      href: 'https://my.osmc.tv/login/?redirect_to=https://my.osmc.tv/my-account/'
     },
     'My Account'
     ));
