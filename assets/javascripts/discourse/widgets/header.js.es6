@@ -238,7 +238,7 @@ createWidget('osmc-links-desktop', {
           [
             h('a.header-sublink.active', {
               target: '_blank',
-              href: '#'
+              href: 'https://discourse.osmc.tv'
             }, 'Community'),
             h('a.header-sublink', {
               target: '_blank',
