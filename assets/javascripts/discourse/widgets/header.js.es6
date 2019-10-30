@@ -312,7 +312,7 @@ createWidget("osmc-links-desktop", {
           [
             h("a.header-sublink.active", {
               target: "_blank",
-              href: "#"
+              href: "https://discourse.osmc.tv"
             }, "Community"),
             h("a.header-sublink", {
               target: "_blank",
@@ -338,7 +338,7 @@ createWidget("osmc-links-desktop", {
             }, "GitHub"),
             h("a.header-sublink", {
               target: "_blank",
-              href: "https://github.com/osmc/osmc/issues"
+              href: "https://osmc.tv/wiki/development/reporting-bugs"
             }, "Report Bugs")
           ]
         )
@@ -347,21 +347,21 @@ createWidget("osmc-links-desktop", {
 
     links.push(h("a.header-link", {
       target: "_blank",
-      href: "https://osmc.tv/shop/"
+      href: "https://osmc.tv/store"
     },
     "Shop"
     ));
 
     links.push(h("a.header-link.big.pink", {
       target: "_blank",
-      href: "http://getvero.tv"
+      href: "https://getvero.tv"
     },
-    "Vero 4K"
+    "Vero 4K +"
     ));
 
     links.push(h("a.header-link.big.blue", {
       target: "_blank",
-      href: "http://myosmc.com"
+      href: "https://my.osmc.tv/login/?redirect_to=https://my.osmc.tv/my-account/"
     },
     "My Account"
     ));
