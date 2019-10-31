@@ -289,6 +289,9 @@ export default createWidget("hamburger-menu", {
     const { currentUser } = this;
     const results = [];
 
+    results.push(this.attach('menu-links', { name: 'osmc-links-mobile', heading: true, contents: () => this.osmcLinks()}));
+    results.push(this.attach('menu-links', { name: 'osmc-colored-links', heading: true, contents: () => this.osmcColoredLinks()}));
+
     let faqUrl = this.siteSettings.faq_url;
     if (!faqUrl || faqUrl.length === 0) {
       faqUrl = Discourse.getURL("/faq");

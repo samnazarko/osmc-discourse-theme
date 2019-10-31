@@ -392,6 +392,7 @@ export default createWidget("header", {
   html(attrs, state) {
     let contents = () => {
       const panels = [
+        this.attach('osmc-links-desktop'),
         this.attach("header-buttons", attrs),
         this.attach("header-icons", {
           hamburgerVisible: state.hamburgerVisible,
