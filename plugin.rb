@@ -9,7 +9,6 @@ register_asset "stylesheets/mobile/header.scss"
 register_asset "stylesheets/desktop/header.scss"
 register_asset "stylesheets/common.scss"
 register_asset "stylesheets/desktop.scss"
-register_asset "stylesheets/embed.scss"
 register_asset "stylesheets/mobile.scss"
 
 PLUGIN_NAME ||= "osmc".freeze
