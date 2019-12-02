@@ -276,7 +276,7 @@ export default createWidget("hamburger-menu", {
   osmcColoredLinks() {
     const links = [];
 
-    links.push({ href: "https://getvero.tv", className: "osmc-link-pink", label: "osmc.vero4k" });
+    links.push({ href: "https://osmc.tv/vero", className: "osmc-link-pink", label: "osmc.vero4k" });
     links.push({ href: "https://my.osmc.tv/login/?redirect_to=https://my.osmc.tv/my-account/", className: "osmc-link-blue", label: "osmc.my_account" });
 	
     const extraLinks = flatten(
