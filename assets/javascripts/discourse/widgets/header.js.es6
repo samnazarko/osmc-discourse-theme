@@ -354,7 +354,7 @@ createWidget("osmc-links-desktop", {
 
     links.push(h("a.header-link.big.pink", {
       target: "_blank",
-      href: "https://getvero.tv"
+      href: "https://osmc.tv/vero"
     },
     "Vero 4K +"
     ));
