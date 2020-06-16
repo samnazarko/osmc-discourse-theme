@@ -5,8 +5,8 @@
 
 register_asset "javascripts/discourse/templates/preferences/account.hbs"
 register_asset "stylesheets/common/base/header.scss"
-register_asset "stylesheets/mobile/header.scss"
 register_asset "stylesheets/desktop/header.scss"
+register_asset "stylesheets/mobile/header.scss"
 register_asset "stylesheets/common.scss"
 register_asset "stylesheets/desktop.scss"
 register_asset "stylesheets/mobile.scss"
