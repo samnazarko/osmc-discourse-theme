@@ -11,7 +11,9 @@ register_asset "stylesheets/common.scss"
 register_asset "stylesheets/desktop.scss"
 register_asset "stylesheets/mobile.scss"
 
-load File.expand_path('../app/controllers/groups_controller.rb', __FILE__)
+after_initialize do
+  load File.expand_path('../app/controllers/groups_controller.rb', __FILE__)
+end
 
 PLUGIN_NAME ||= "osmc".freeze
 
