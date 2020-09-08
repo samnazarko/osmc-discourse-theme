@@ -1,8 +1,11 @@
+import getURL from "discourse-common/lib/get-url";
+import I18n from "I18n";
+import { get } from "@ember/object";
 import { schedule } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import { iconNode } from "discourse-common/lib/icon-library";
 import { avatarImg } from "discourse/widgets/post";
-import DiscourseURL from "discourse/lib/url";
+import DiscourseURL, { userPath } from "discourse/lib/url";
 import { wantsNewWindow } from "discourse/lib/intercept-click";
 import { applySearchAutocomplete } from "discourse/lib/search";
 import { ajax } from "discourse/lib/ajax";
@@ -10,11 +13,20 @@ import { addExtraUserClasses } from "discourse/helpers/user-avatar";
 import { scrollTop } from "discourse/mixins/scroll-top";
 import { h } from "virtual-dom";
 
+const _extraHeaderIcons = [];
+
+export function addToHeaderIcons(icon) {
+  _extraHeaderIcons.push(icon);
+}
+
 const dropdown = {
   buildClasses(attrs) {
+    let classes = attrs.classNames || [];
     if (attrs.active) {
-      return "active";
+      classes.push("active");
     }
+
+    return classes;
   },
 
   click(e) {
@@ -25,12 +37,12 @@ const dropdown = {
     if (!this.attrs.active) {
       this.sendWidgetAction(this.attrs.action);
     }
-  }
+  },
 };
 
 createWidget("header-notifications", {
   settings: {
-    avatarSize: "medium"
+    avatarSize: "medium",
   },
 
   html(attrs) {
@@ -38,7 +50,7 @@ createWidget("header-notifications", {
 
     let avatarAttrs = {
       template: user.get("avatar_template"),
-      username: user.get("username")
+      username: user.get("username"),
     };
 
     if (this.siteSettings.enable_names) {
@@ -49,7 +61,7 @@ createWidget("header-notifications", {
       avatarImg(
         this.settings.avatarSize,
         addExtraUserClasses(user, avatarAttrs)
-      )
+      ),
     ];
 
     const unreadNotifications = user.get("unread_notifications");
@@ -61,48 +73,59 @@ createWidget("header-notifications", {
           rawLabel: unreadNotifications,
           omitSpan: true,
           title: "notifications.tooltip.regular",
-          titleOptions: { count: unreadNotifications }
+          titleOptions: { count: unreadNotifications },
         })
       );
     }
 
-    const unreadPMs = user.get("unread_private_messages");
-    if (!!unreadPMs) {
+    const unreadHighPriority = user.get("unread_high_priority_notifications");
+    if (!!unreadHighPriority) {
+      // highlight the avatar if the first ever PM is not read
       if (
         !user.get("read_first_notification") &&
         !user.get("enforcedSecondFactor")
       ) {
-        contents.push(h("span.ring"));
         if (!attrs.active && attrs.ringBackdrop) {
+          contents.push(h("span.ring"));
           contents.push(h("span.ring-backdrop-spotlight"));
           contents.push(
             h(
               "span.ring-backdrop",
               {},
-              h(
-                "h1.ring-first-notification",
-                {},
-                I18n.t("user.first_notification")
-              )
+              h("h1.ring-first-notification", {}, [
+                h("span", {}, I18n.t("user.first_notification")),
+                h("span", {}, [
+                  I18n.t("user.skip_new_user_tips.not_first_time"),
+                  " ",
+                  this.attach("link", {
+                    action: "skipNewUserTips",
+                    className: "skip-new-user-tips",
+                    label: "user.skip_new_user_tips.skip_link",
+                    title: "user.skip_new_user_tips.description",
+                    omitSpan: true,
+                  }),
+                ]),
+              ])
             )
           );
         }
       }
 
+      // add the counter for the unread high priority
       contents.push(
         this.attach("link", {
           action: attrs.action,
-          className: "badge-notification unread-private-messages",
-          rawLabel: unreadPMs,
+          className: "badge-notification unread-high-priority-notifications",
+          rawLabel: unreadHighPriority,
           omitSpan: true,
-          title: "notifications.tooltip.message",
-          titleOptions: { count: unreadPMs }
+          title: "notifications.tooltip.high_priority",
+          titleOptions: { count: unreadHighPriority },
         })
       );
     }
 
     return contents;
-  }
+  },
 });
 
 createWidget(
@@ -121,12 +144,13 @@ createWidget(
           {
             attributes: {
               href: attrs.user.get("path"),
-              "data-auto-route": true
-            }
+              title: attrs.user.get("name"),
+              "data-auto-route": true,
+            },
           },
           this.attach("header-notifications", attrs)
         );
-      }
+      },
     },
     dropdown
   )
@@ -154,12 +178,12 @@ createWidget(
               "data-auto-route": true,
               title,
               "aria-label": title,
-              id: attrs.iconId
-            }
+              id: attrs.iconId,
+            },
           },
           body
         );
-      }
+      },
     },
     dropdown
   )
@@ -177,28 +201,13 @@ createWidget("header-icons", {
       return [];
     }
 
-    const hamburger = this.attach("header-dropdown", {
-      title: "hamburger_menu",
-      icon: "bars",
-      iconId: "toggle-hamburger-menu",
-      active: attrs.hamburgerVisible,
-      action: "toggleHamburger",
-      href: "",
-      contents() {
-        let { currentUser } = this;
-        if (currentUser && currentUser.reviewable_count) {
-          return h(
-            "div.badge-notification.reviewables",
-            {
-              attributes: {
-                title: I18n.t("notifications.reviewable_items")
-              }
-            },
-            this.currentUser.reviewable_count
-          );
-        }
-      }
-    });
+    const icons = [];
+
+    if (_extraHeaderIcons) {
+      _extraHeaderIcons.forEach((icon) => {
+        icons.push(this.attach(icon));
+      });
+    }
 
     const search = this.attach("header-dropdown", {
       title: "search.title",
@@ -206,23 +215,52 @@ createWidget("header-icons", {
       iconId: "search-button",
       action: "toggleSearchMenu",
       active: attrs.searchVisible,
-      href: Discourse.getURL("/search")
+      href: getURL("/search"),
+      classNames: ["search-dropdown"],
     });
 
-    const icons = [search, hamburger];
+    icons.push(search);
+
+    const hamburger = this.attach("header-dropdown", {
+      title: "hamburger_menu",
+      icon: "bars",
+      iconId: "toggle-hamburger-menu",
+      active: attrs.hamburgerVisible,
+      action: "toggleHamburger",
+      href: "",
+      classNames: ["hamburger-dropdown"],
+
+      contents() {
+        let { currentUser } = this;
+        if (currentUser && currentUser.reviewable_count) {
+          return h(
+            "div.badge-notification.reviewables",
+            {
+              attributes: {
+                title: I18n.t("notifications.reviewable_items"),
+              },
+            },
+            this.currentUser.reviewable_count
+          );
+        }
+      },
+    });
+
+    icons.push(hamburger);
+
     if (attrs.user) {
       icons.push(
         this.attach("user-dropdown", {
           active: attrs.userVisible,
           action: "toggleUserMenu",
           ringBackdrop: attrs.ringBackdrop,
-          user: attrs.user
+          user: attrs.user,
         })
       );
     }
 
     return icons;
-  }
+  },
 });
 
 createWidget("header-buttons", {
@@ -240,7 +278,7 @@ createWidget("header-buttons", {
         this.attach("button", {
           label: "sign_up",
           className: "btn-primary btn-small sign-up-button",
-          action: "showCreateAccount"
+          action: "showCreateAccount",
         })
       );
     }
@@ -250,11 +288,11 @@ createWidget("header-buttons", {
         label: "log_in",
         className: "btn-primary btn-small login-button",
         action: "showLogin",
-        icon: "user"
+        icon: "user",
       })
     );
     return buttons;
-  }
+  },
 });
 
 createWidget("header-cloak", {
@@ -263,10 +301,10 @@ createWidget("header-cloak", {
     return "";
   },
   click() {},
-  scheduleRerender() {}
+  scheduleRerender() {},
 });
 
-const forceContextEnabled = ["category", "user", "private_messages"];
+const forceContextEnabled = ["category", "user", "private_messages", "tag"];
 
 let additionalPanels = [];
 export function attachAdditionalPanel(name, toggle, transformAttrs) {
@@ -379,7 +417,7 @@ export default createWidget("header", {
       searchVisible: false,
       hamburgerVisible: false,
       userVisible: false,
-      ringBackdrop: true
+      ringBackdrop: true,
     };
 
     if (this.site.mobileView) {
@@ -391,18 +429,20 @@ export default createWidget("header", {
 
   html(attrs, state) {
     let contents = () => {
-      const panels = [
-        this.attach('osmc-links-desktop'),
-        this.attach("header-buttons", attrs),
-        this.attach("header-icons", {
-          hamburgerVisible: state.hamburgerVisible,
-          userVisible: state.userVisible,
-          searchVisible: state.searchVisible,
-          ringBackdrop: state.ringBackdrop,
-          flagCount: attrs.flagCount,
-          user: this.currentUser
-        })
-      ];
+      const headerIcons = this.attach("header-icons", {
+        hamburgerVisible: state.hamburgerVisible,
+        userVisible: state.userVisible,
+        searchVisible: state.searchVisible,
+        ringBackdrop: state.ringBackdrop,
+        flagCount: attrs.flagCount,
+        user: this.currentUser,
+      });
+
+      if (attrs.onlyIcons) {
+        return headerIcons;
+      }
+
+      const panels = [this.attach('osmc-links-desktop'), this.attach("header-buttons", attrs), headerIcons];
 
       if (state.searchVisible) {
         const contextType = this.searchContextType();
@@ -427,7 +467,7 @@ export default createWidget("header", {
         panels.push(this.attach("user-menu"));
       }
 
-      additionalPanels.map(panel => {
+      additionalPanels.map((panel) => {
         if (this.state[panel.toggle]) {
           panels.push(
             this.attach(
@@ -478,8 +518,8 @@ export default createWidget("header", {
           data: {
             search_log_id: searchLogId,
             search_result_id: searchResultId,
-            search_result_type: searchResultType
-          }
+            search_result_type: searchResultType,
+          },
         });
       }
     }
@@ -527,7 +567,7 @@ export default createWidget("header", {
           this.siteSettings,
           this.appEvents,
           {
-            appendSelector: ".menu-panel"
+            appendSelector: ".menu-panel",
           }
         );
       });
@@ -552,11 +592,11 @@ export default createWidget("header", {
     if (!this.site.mobileView) return;
     if (bool) {
       document.body.addEventListener("touchmove", this.preventDefault, {
-        passive: false
+        passive: false,
       });
     } else {
       document.body.removeEventListener("touchmove", this.preventDefault, {
-        passive: false
+        passive: false,
       });
     }
   },
@@ -580,12 +620,12 @@ export default createWidget("header", {
     const currentPath = this.register
       .lookup("service:router")
       .get("_router.currentPath");
-    const blacklist = [/^discovery\.categories/];
-    const whitelist = [/^topic\./];
-    const check = function(regex) {
+    const blocklist = [/^discovery\.categories/];
+    const allowlist = [/^topic\./];
+    const check = function (regex) {
       return !!currentPath.match(regex);
     };
-    let showSearch = whitelist.any(check) && !blacklist.any(check);
+    let showSearch = allowlist.any(check) && !blocklist.any(check);
 
     // If we're viewing a topic, only intercept search if there are cloaked posts
     if (showSearch && currentPath.match(/^topic\./)) {
@@ -627,6 +667,36 @@ export default createWidget("header", {
     }
   },
 
+  headerDismissFirstNotificationMask() {
+    // Dismiss notifications
+    this.store
+      .findStale(
+        "notification",
+        {
+          recent: true,
+          silent: this.get("currentUser.enforcedSecondFactor"),
+          limit: 5,
+        },
+        { cacheKey: "recent-notifications" }
+      )
+      .refresh();
+    // Update UI
+    this.state.ringBackdrop = false;
+    this.scheduleRerender();
+  },
+
+  skipNewUserTips() {
+    this.headerDismissFirstNotificationMask();
+    ajax(userPath(this.currentUser.username_lower), {
+      type: "PUT",
+      data: {
+        skip_new_user_tips: true,
+      },
+    }).then(() => {
+      this.currentUser.set("skip_new_user_tips", true);
+    });
+  },
+
   headerKeyboardTrigger(msg) {
     switch (msg.type) {
       case "search":
@@ -656,8 +726,8 @@ export default createWidget("header", {
     if (service) {
       const ctx = service.get("searchContext");
       if (ctx) {
-        return Ember.get(ctx, "type");
+        return get(ctx, "type");
       }
     }
-  }
+  },
 });

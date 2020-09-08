@@ -1,6 +1,6 @@
 # name: osmc
 # about: Osmc modifications for Discourse
-# version: 0.3
+# version: 0.4
 # authors: Simone Uggeri (thehacker66)
 
 register_asset "javascripts/discourse/templates/preferences/account.hbs"
