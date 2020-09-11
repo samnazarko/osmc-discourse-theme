@@ -314,7 +314,7 @@ export function attachAdditionalPanel(name, toggle, transformAttrs) {
 createWidget("osmc-links-desktop", {
   tagName: "div.header-links-wrapper.clearfix",
 
-  html(attrs) {
+  html() {
     const links = [];
 
     links.push(h("a.header-link", {
@@ -442,7 +442,7 @@ export default createWidget("header", {
         return headerIcons;
       }
 
-      const panels = [this.attach('osmc-links-desktop'), this.attach("header-buttons", attrs), headerIcons];
+      const panels = [this.attach("osmc-links-desktop"), this.attach("header-buttons", attrs), headerIcons];
 
       if (state.searchVisible) {
         const contextType = this.searchContextType();
