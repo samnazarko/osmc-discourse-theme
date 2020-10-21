@@ -1,15 +1,9 @@
 # name: osmc
 # about: Osmc modifications for Discourse
-# version: 0.4
+# version: 0.5
 # authors: Simone Uggeri (thehacker66)
 
 register_asset "javascripts/discourse/templates/preferences/account.hbs"
-register_asset "stylesheets/common/base/header.scss"
-register_asset "stylesheets/desktop/header.scss"
-register_asset "stylesheets/mobile/header.scss"
-register_asset "stylesheets/common.scss"
-register_asset "stylesheets/desktop.scss"
-register_asset "stylesheets/mobile.scss"
 
 after_initialize do
   load File.expand_path('../app/controllers/groups_controller.rb', __FILE__)
