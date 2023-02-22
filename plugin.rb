@@ -3,8 +3,6 @@
 # version: 0.5
 # authors: Simone Uggeri (thehacker66)
 
-register_asset "javascripts/discourse/templates/preferences/account.hbs"
-
 after_initialize do
   load File.expand_path('../app/controllers/groups_controller.rb', __FILE__)
 end
