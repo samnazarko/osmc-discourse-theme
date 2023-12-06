@@ -1,6 +1,6 @@
 # name: osmc
 # about: Osmc modifications for Discourse
-# version: 0.5
+# version: 0.6
 # authors: Simone Uggeri (thehacker66)
 
 after_initialize do
