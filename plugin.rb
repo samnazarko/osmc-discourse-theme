@@ -1,6 +1,6 @@
 # name: osmc
 # about: Osmc modifications for Discourse
-# version: 0.6
+# version: 0.7
 # authors: Simone Uggeri (thehacker66)
 
 register_asset "stylesheets/common/banner.scss"
